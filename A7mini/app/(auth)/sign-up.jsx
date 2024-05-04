@@ -2,12 +2,14 @@ import { View, Text, ScrollView, Image } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { router, Link, Stack } from 'expo-router'
+import { Link } from 'expo-router'
 
 import { images } from '../../constants';
  
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
+
+import { createUser } from '../../lib/appwrite';
 
 const SignIn = () => { 
   const [form, setForm] = useState({
@@ -19,7 +21,19 @@ const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = () => {
+    if(!form.username || form.email ||!form.password) {
+     Alert.alert('Error', 'Please fill in all the fields') 
+    }
 
+    setIsSubmitting(true);
+
+    try {
+
+    } catch (error) {
+      Alert.alert('Error', error.message)
+    }
+
+    createUser();
   }
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -33,7 +47,7 @@ const SignIn = () => {
           font-psemibold mt-10">Inscrivez à Youfa</Text>     
 
           <FormField 
-            title="username"
+            title="Username"
             value={form.username}
             handleChangeText={(e) => setForm({ ...form, username: e})}
             otherStyles="mt-7"
@@ -64,7 +78,7 @@ const SignIn = () => {
           <View className="justify-center pt-5 flex-column">
             <Text className="text-lg text-primary-300 
             font-pregular text-center">Vous avez dèja un compte?</Text>
-            <Link href="/sign-up" className="text-lg font-psemibold
+            <Link href="/data" className="text-lg font-psemibold
             text-secondary text-center">Se Connecter</Link>
           </View>
         </View>
