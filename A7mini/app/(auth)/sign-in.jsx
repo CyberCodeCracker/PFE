@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -9,7 +9,7 @@ import { images } from '../../constants';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 
-const SignIn = () => { 
+const SignUp = () => { 
   const [form, setForm] = useState({
     email: '',
     password: ''
@@ -18,7 +18,9 @@ const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = () => {
-
+    if(!form.email ||!form.password) {
+      Alert.alert("Erreur: S'il vous plait remplit tous les champs") 
+     }
   }
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -69,4 +71,4 @@ const SignIn = () => {
   )
 }
 
-export default SignIn
+export default SignUp

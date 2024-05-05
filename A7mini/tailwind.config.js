@@ -22,6 +22,7 @@ module.exports = {
         },
         gray: {
           100: "#CDCDE0",
+          200: "#9E9E9E",
         },
       },
       fontFamily: {

@@ -19,13 +19,17 @@ client
   const account = new Account(client);
   const databases = new Databases(client);
 
-export const createUser = async (email, password, username) => {
+export const createUser = async (email, password, username, 
+  age, heartRate, gender) => {
   try {
     const newAccount = await account.create(
-      ID.unique,
+      ID.unique(),
       email,
       password,
-      username
+      username,
+      age,
+      heartRate,
+      gender
     ) 
  
     if(!newAccount) throw Error;
@@ -40,6 +44,9 @@ export const createUser = async (email, password, username) => {
         accountId: newAccount.$id,
         email,
         username,
+        age,
+        heartRate,
+        gender,
       }
     )
 

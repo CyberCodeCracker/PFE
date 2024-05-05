@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, Alert, StyleSheet,
+  TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -15,25 +16,34 @@ const SignIn = () => {
   const [form, setForm] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    age: null,
+    heartRate: null
   })
+
+  const [gender, setGender] = useState(''); 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = () => {
-    if(!form.username || form.email ||!form.password) {
-     Alert.alert('Error', 'Please fill in all the fields') 
+  const submit = async () => {
+    if(!form.username || !form.email || !form.password || 
+    !form.age || !form.heartRate || !gender) {
+     Alert.alert("Erreur: S'il vous plait remplit tous les champs") 
     }
 
     setIsSubmitting(true);
 
     try {
+      const result = await createUser(form.email, form.password, 
+      form.username, form.age, form.heartRate, gender)
 
+      router.replace('/home')
     } catch (error) {
       Alert.alert('Error', error.message)
+    } finally {
+      setIsSubmitting(false)
     }
 
-    createUser();
   }
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -42,9 +52,6 @@ const SignIn = () => {
           <Image source={images.logo} 
             resizeMode='contain' className="w-[115px] h-[35px]"
           />
-
-          <Text className="text-2xl text-primary-200 
-          font-psemibold mt-10">Inscrivez à Youfa</Text>     
 
           <FormField 
             title="Username"
@@ -68,6 +75,39 @@ const SignIn = () => {
             otherStyles="mt-3"
           />   
 
+        <View className="flex-row justify-between items-center mb-3 mt-3">
+          <FormField 
+            title="Age"
+            value={form.age}
+            handleAgeChangeText={(e) => setForm({ ...form, age: e})}
+            otherStyles="w-[30%] mr-4"
+          />
+
+          <FormField 
+            title="Fréquence Cardiaque"
+            value={form.heartRate}
+            handleAgeChangeText={(e) => setForm({ ...form, heartRate: e})}
+            otherStyles="flex-grow ml-4"
+          />
+        </View>
+        
+        <View className="flex-row gap-2">
+            <Text className="text-xl text-primary-300 text-pmedium">Gender:{' '}</Text>
+
+            {['Male', 'Femelle'].map(item => (
+              <View key={item} style={styles.genders}>
+                <TouchableOpacity 
+                  style={styles.outter}
+                  onPress={() => setGender(item)}>
+                  {gender === item &&
+                    <View style={styles.inner}></View>
+                  }
+                </TouchableOpacity>
+                <Text className="text-lg text-black ml-1">{item}</Text>
+              </View>
+            ))}
+          </View> 
+
           <CustomButton 
             title="S'inscrire"
             handlePress={submit}
@@ -75,16 +115,43 @@ const SignIn = () => {
             isLoading={isSubmitting}
           />
 
-          <View className="justify-center pt-5 flex-column">
+          <View className="justify-center pt-5 flex-row">
             <Text className="text-lg text-primary-300 
-            font-pregular text-center">Vous avez dèja un compte?</Text>
-            <Link href="/data" className="text-lg font-psemibold
-            text-secondary text-center">Se Connecter</Link>
+            font-pregular text-center">Avez dèja un compte?</Text>
+            <Link href="/sign-in" className="text-lg font-psemibold
+            text-secondary text-center ml-1">Connecter</Link>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  genders: {
+    marginHorizontal: 15,
+    alignItems: 'center',
+    flexDirection: 'row',
+    display: 'flex',
+    marginHorizontal: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inner: {
+    width: 12,
+    height: 12,
+    backgroundColor: 'gray',
+    borderRadius: 10,
+  },
+  outter: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+
+})
 
 export default SignIn
