@@ -6,7 +6,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '../constants';
 import CustomButton from '../components/CustomButton';
 
+
 export default function  App() {
+
+
   return (
     <SafeAreaView className= "bg-primary h-full">
       <ScrollView contentContainerStyle={{ height: '100%' }}>
@@ -28,13 +31,13 @@ export default function  App() {
             <Text className="text-xl text-black font-bold 
             text-center">Détecter Votre Fatigue En Utilisant
             La Puissance De l'IA Avec{' '}
-            <Text className="text-secondary-200">Youfa</Text>
+            <Text className="text-secondary-200">Vigilance</Text>
             </Text>
 
             <Image 
               source={images.path}
-              className="flex w-[140px] h-[15px] absolute -bottom-2 
-              -right-8"
+              className="flex w-[170px] h-[16px] absolute -bottom-2 
+              -right-11"
               resizeMode='contain'
             />
           </View>

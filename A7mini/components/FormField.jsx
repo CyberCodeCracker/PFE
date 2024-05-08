@@ -6,12 +6,15 @@ import { icons } from '../constants'
 const FormField = ({ title, value, placeholder, 
   handleChangeText, otherStyles, ...props}) => {
   const [showPassword, setShowPassword] = useState(false);
-
-  // Function to handle age input
-  const handleAgeChangeText = (text) => {
-    const age = parseInt(text);
-    if (!isNaN(age) && age >= 18 && age <= 90) {
-      handleChangeText(text); 
+  const handleTextChange = (text) => {
+    // If the title is 'Age' or 'Fréquence Cardiaque', validate that the input is a valid integer
+    if ((title === 'Age' || title === 'Fréquence Cardiaque') && text.trim() !== '') {
+      const intValue = parseInt(text);
+      if (!isNaN(intValue)) {
+        handleChangeText(intValue.toString());
+      }
+    } else {
+      handleChangeText(text);
     }
   };
 
@@ -25,10 +28,10 @@ const FormField = ({ title, value, placeholder,
         focus:border-secondary">
           <TextInput 
             className="flex-1 text-black font-psemibold text-base"
-            value={value}
+            value={(title === 'Age' || title === 'Fréquence Cardiaque') ? value.toString() : value}
             placeholder={placeholder}
             placeholderTextColor="#b7b78b"
-            onChangeText={handleChangeText}
+            onChangeText={(text) => handleChangeText(title === 'Age' || title === 'Fréquence Cardiaque' ? parseInt(text.replace(/[^0-9]/g, ''), 10) : text)}
             keyboardType={(title === 'Age' || title === 'Fréquence Cardiaque') ? 
             'numeric' : 'default'} 
             secureTextEntry={title === 'Password' && !showPassword}

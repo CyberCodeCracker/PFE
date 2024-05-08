@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image, Alert, StyleSheet,
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 
 import { images } from '../../constants';
  
@@ -12,13 +12,13 @@ import CustomButton from '../../components/CustomButton';
 
 import { createUser } from '../../lib/appwrite';
 
-const SignIn = () => { 
+const SignUp = () => { 
   const [form, setForm] = useState({
     username: '',
     email: '',
     password: '',
-    age: null,
-    heartRate: null
+    age: '',
+    heartRate: ''
   })
 
   const [gender, setGender] = useState(''); 
@@ -26,23 +26,43 @@ const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = async () => {
-    if(!form.username || !form.email || !form.password || 
-    !form.age || !form.heartRate || !gender) {
-     Alert.alert("Erreur: S'il vous plait remplit tous les champs") 
+    if (form.username === "" || form.email === ""|| form.password === ""|| 
+        form.age === "" || form.heartRate === "" || gender === "") {
+        let errorMessage = "Erreur: Remplit tous les champs";
+        if (!form.username) {
+            errorMessage += "\nNom d'utilisateur";
+        }
+        if (!form.email) {
+            errorMessage += "\nEmail";
+        }
+        if (!form.password) {
+            errorMessage += "\nMot de passe";
+        }
+        if (!form.age) {
+            errorMessage += "\nAge";
+        }
+        if (!form.heartRate) {
+            errorMessage += "\nFréquence cardiaque";
+        }
+        if (!gender) {
+            errorMessage += "\nGenre";
+        }
+        Alert.alert(errorMessage);
     }
 
     setIsSubmitting(true);
 
     try {
-      const result = await createUser(form.email, form.password, 
-      form.username, form.age, form.heartRate, gender)
+      const result = await createUser(form.email, form.password, form.username,
+      form.age, form.heartRate, gender);
 
       router.replace('/home')
     } catch (error) {
-      Alert.alert('Error', error.message)
-    } finally {
+      throw new Error(error);
+    } finally { 
       setIsSubmitting(false)
     }
+
 
   }
   return (
@@ -79,14 +99,14 @@ const SignIn = () => {
           <FormField 
             title="Age"
             value={form.age}
-            handleAgeChangeText={(e) => setForm({ ...form, age: e})}
+            handleChangeText={(e) => setForm({ ...form, age: e})}
             otherStyles="w-[30%] mr-4"
           />
 
           <FormField 
             title="Fréquence Cardiaque"
             value={form.heartRate}
-            handleAgeChangeText={(e) => setForm({ ...form, heartRate: e})}
+            handleChangeText={(e) => setForm({ ...form, heartRate: e})}
             otherStyles="flex-grow ml-4"
           />
         </View>
@@ -118,7 +138,7 @@ const SignIn = () => {
           <View className="justify-center pt-5 flex-row">
             <Text className="text-lg text-primary-300 
             font-pregular text-center">Avez dèja un compte?</Text>
-            <Link href="/sign-in" className="text-lg font-psemibold
+            <Link href="/home" className="text-lg font-psemibold
             text-secondary text-center ml-1">Connecter</Link>
           </View>
         </View>
@@ -154,4 +174,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default SignIn
+export default SignUp

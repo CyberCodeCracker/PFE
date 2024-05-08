@@ -1,5 +1,7 @@
 import { View, Text, Image } from 'react-native'
-import { Tabs, Redirect } from 'expo-router';
+import { Tabs, Redirect, Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+
 
 import { icons } from '../../constants';
 
@@ -20,52 +22,20 @@ const TabIcon = ({ icon, color, name, focused }) => {
 }
 
 const TabsLayout = () => {
-  return (
-    <>
-        <Tabs
-            screenOptions={{
-                tabBarShowLabel: false,
-                tabBarInactiveTintColor: '#CDCDE0',
-                tabBarStyle: {
-                    borderTopWidth: 1,
-                    borderTopColor: '#232533',
-                    height: 60,
-                }
-            }}
-        >
-            <Tabs.Screen 
+    return (
+      <>
+        <Stack>
+          <Stack.Screen 
             name="home"
             options={{
-                title: 'Acceuil',
-                headerShown: false,
-                tabBarIcon: ({ color, focused }) => (
-                    <TabIcon 
-                        icon={icons.home}
-                        color={color}
-                        name="Acceuil"
-                        focused={focused}
-                    />
-                )
+              headerShown: false
             }}
-            />
-            <Tabs.Screen 
-            name="profile"
-            options={{
-                title: 'Profile',
-                headerShown: false,
-                tabBarIcon: ({ color, focused }) => (
-                    <TabIcon 
-                        icon={icons.profile}
-                        color={color}
-                        name="Profile"
-                        focused={focused}
-                    />
-                )
-            }}
-            />
-        </Tabs>
-    </>
-  )
-}
+          />
+        </Stack>
+  
+        <StatusBar backgroundColor='#161622' style='light' />
+      </>
+    )
+  }
 
 export default TabsLayout
