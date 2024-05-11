@@ -9,7 +9,11 @@ import { images } from '../../constants';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 
-import { signIn } from '../../lib/appwrite';
+import { signIn, getCurrentUser } from '../../lib/appwrite';
+
+import { useNavigation } from 'expo-router';
+
+import { useGlobalContext } from '../../context/GlobalProvider';
 
 
 const SignIn = () => { 
@@ -17,6 +21,8 @@ const SignIn = () => {
     email: '',
     password: ''
   })
+
+  const navigation = useNavigation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,14 +41,17 @@ const SignIn = () => {
 
     setIsSubmitting(true);
 
-    try {
+    try { 
       await signIn(form.email, form.password);
+      const result = await getCurrentUser();
+      setUser(result);
+      setIsLogged(true);
+      Alert.alert("Success", "User signed in successfully");
 
-      router.replace('/home')
+      router.replace('/home');
     } catch (error) {
-      Alert.alert("Error", error.message)
-      console.log(error.message)
-     } finally { 
+      Alert.alert('Error', error.message)
+    } finally {
       setIsSubmitting(false)
     }
 
@@ -97,4 +106,5 @@ const SignIn = () => {
   )
 }
 
-export default SignIn;
+
+export default SignIn

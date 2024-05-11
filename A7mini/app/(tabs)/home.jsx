@@ -1,15 +1,44 @@
 import { View, Text, ScrollView, Image, Alert, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { images } from '../../constants';
 
 import CustomButton from '../../components/CustomButton';
 
+import { useRoute } from '@react-navigation/native';
+
+import WebSocket from "react-native-websocket";
 
 const home = () => {
   const [showContent, setShowContent] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [clignement, setClignement] = useState(0)
+
+  useEffect(() => {
+    const websocket = new WebSocket('ws://localhost:8765');
+
+    websocket.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    websocket.onmessage = (event) => {
+      // Update the EAR value when a message is received
+      setEarValue(parseFloat(event.data));
+    };
+
+    websocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    return () => {
+      websocket.close();
+    };
+  }, []);
+
+  const route = useRoute();
+  const userEmail = route.params?.userEmail || 'No email';
 
   const startDetection = () => {
     setShowContent(false)
@@ -37,6 +66,8 @@ const home = () => {
               <Text className="text-lg text-primary-300 font-psemibold">Clignement {"(en min)"}:{' '}0</Text>
               <Text className="text-lg text-primary-300 font-psemibold">Baillement {"(en min)"}:{' '}0</Text>
               <Text className="text-lg text-primary-300 font-psemibold">Fréquence Cardiaque {"(bpm)"}:{' '}0</Text>
+              <Text>{userEmail}</Text>
+              <Text>clignement {clignement}</Text>
             </View>
           )}
     </View>
