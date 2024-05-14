@@ -8,32 +8,42 @@ import CustomButton from '../../components/CustomButton';
 
 import { useRoute } from '@react-navigation/native';
 
-import WebSocket from "react-native-websocket";
-
 const home = () => {
   const [showContent, setShowContent] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [clignement, setClignement] = useState(0)
+  const [blinkingCounter, setBlinkingCounter] = useState(0)
+  
+  const [yawnCounter, setYawnCounter] = useState(0)
 
   useEffect(() => {
-    const websocket = new WebSocket('ws://localhost:8765');
+    // Replace 'YOUR_COMPUTER_IP' with your computer's local IP address
+    const ws = new WebSocket('ws://192.168.1.149:8766');
 
-    websocket.onopen = () => {
-      console.log('WebSocket connected');
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
     };
 
-    websocket.onmessage = (event) => {
-      // Update the EAR value when a message is received
-      setEarValue(parseFloat(event.data));
+    ws.onmessage = (e) => {
+      // Parse the received JSON data
+      const data = JSON.parse(e.data);
+      setBlinkingCounter(data.clignement);
+      setYawnCounter(data.nb_baillements);
     };
 
-    websocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
+    ws.onerror = (e) => {
+      console.error('WebSocket error', e.message);
     };
 
+    ws.onclose = (e) => {
+      console.log('WebSocket closed', e.code, e.reason);
+    };
+
+    // Cleanup on unmount
     return () => {
-      websocket.close();
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close;
+      }
     };
   }, []);
 
@@ -63,11 +73,10 @@ const home = () => {
           ) : (
             <View className="flex-column gap-6">
               <Text className="text-lg text-primary-300 font-psemibold">Assoupissement {"(en min)"}:{' '}0</Text>
-              <Text className="text-lg text-primary-300 font-psemibold">Clignement {"(en min)"}:{' '}0</Text>
-              <Text className="text-lg text-primary-300 font-psemibold">Baillement {"(en min)"}:{' '}0</Text>
+              <Text className="text-lg text-primary-300 font-psemibold">Clignement {"(en min)"}:{' '}{blinkingCounter}</Text>
+              <Text className="text-lg text-primary-300 font-psemibold">Baillement {"(en min)"}:{' '}{yawnCounter}</Text>
               <Text className="text-lg text-primary-300 font-psemibold">Fréquence Cardiaque {"(bpm)"}:{' '}0</Text>
               <Text>{userEmail}</Text>
-              <Text>clignement {clignement}</Text>
             </View>
           )}
     </View>

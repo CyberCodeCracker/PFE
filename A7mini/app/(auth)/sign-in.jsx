@@ -48,6 +48,8 @@ const SignIn = () => {
       setIsLogged(true);
       Alert.alert("Success", "User signed in successfully");
 
+      navigation.navigate('/home', { userEmail: form.email });
+
       router.replace('/home');
     } catch (error) {
       Alert.alert('Error', error.message)
