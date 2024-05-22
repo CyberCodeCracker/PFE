@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState } 
 from "react";
 
-import { getCurrentUser } from "../lib/appwrite";
+import { useNavigation } from '@react-navigation/native'; 
+
+import { getCurrentUser, signOut } from "../lib/appwrite";
 
 const GlobalContext = createContext();
 
@@ -12,6 +14,17 @@ const GlobalProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleSignOut = async (navigation) => {
+    try {
+      await signOut();
+      setIsLoggedIn(false);
+      setUser(null);
+      navigation.navigate('sign-in'); 
+    } catch (error) {
+      console.log(error);
+    }
+  };
   
   useEffect(() => {
     getCurrentUser()
@@ -39,10 +52,11 @@ const GlobalProvider = ({ children }) => {
         setIsLoggedIn,
         user,
         setUser,
-        isLoading
+        isLoading,
+        signOut: handleSignOut,
       }}
     >
-      { children}
+      {children}
     </GlobalContext.Provider>
   )
 }

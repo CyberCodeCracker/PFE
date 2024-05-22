@@ -25,6 +25,7 @@ const SignIn = () => {
   const navigation = useNavigation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {setIsLoggedIn, setuser} = useGlobalContext();
 
   const submit = async () => {
     if (form.email === "" || form.password === "")  {
@@ -45,10 +46,11 @@ const SignIn = () => {
       await signIn(form.email, form.password);
       const result = await getCurrentUser();
       setUser(result);
-      setIsLogged(true);
+      setIsLoggedIn(true);
       Alert.alert("Success", "User signed in successfully");
 
-      navigation.navigate('/home', { userEmail: form.email });
+      navigation.navigate('/home', { userEmail: result.email });
+      navigation.navigate('/home', { userAge: result.age });
 
       router.replace('/home');
     } catch (error) {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar } from 'react-native'
+import { StyleSheet, View, StatusBar } from 'react-native';
 import React, { useEffect } from 'react';
 import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
@@ -21,12 +21,12 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    if(error) throw error;
+    if (error) throw error;
 
-    if(fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded, error])
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded, error]);
 
-  if(!fontsLoaded && !error) return null;
+  if (!fontsLoaded && !error) return null;
 
   return (
     <GlobalProvider>
@@ -36,9 +36,9 @@ const RootLayout = () => {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
-  )
-}
+  );
+};
 
-export default RootLayout
+export default RootLayout;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
